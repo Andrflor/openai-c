@@ -10,7 +10,7 @@
 #define OPENAI_DEFAULT_TEMPERATURE 0.7
 
 const char *format = "{\"prompt\":\"%s\",\"max_tokens\": %d,\"stop\":\"\","
-                     "\"model\": \"%s\",\"temperature\": %d}";
+                     "\"model\": \"%s\",\"temperature\": %f}";
 
 struct Openai_easy {
   CURL *curl;
@@ -51,8 +51,9 @@ Openai *openai_easy_init(char *api_key) {
 char *openai_easy_body(Openai *openai, char *data) {
   printf("Going there");
   char *post_data = (char *)malloc(strlen(data) + 200);
-  sprintf(post_data, format, data, openai->model, openai->max_tokens,
+  sprintf(post_data, format, data, openai->max_tokens, openai->model,
           openai->temperature);
+  printf(post_data);
   return post_data;
 }
 
