@@ -1,70 +1,105 @@
 #include <curl/curl.h>
-#include <stdbool.h>
+#include <curl/easy.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define API_URL "https://api.openai.com/v1/engines/text-davinci-003/completions"
+#define OPENAI_API_URL "https://api.openai.com/v1/completions"
+#define OPENAI_DEFAULT_MODEL "text-davinci-003"
+#define OPENAI_DEFAULT_MAX_TOKENS 2048
+#define OPENAI_DEFAULT_TEMPERATURE 0.7
 
-char *openai_generate_post_data(char *data) {
-  char *post_data = (char *)malloc(strlen(data) + 200);
-  sprintf(post_data,
-          "{\"prompt\":\"%s\",\"max_tokens\":2048,\"stop\":\"\","
-          "\"temperature\":0.5}",
-          data);
-  return post_data;
-}
+const char *format = "{\"prompt\":\"%s\",\"max_tokens\": %d,\"stop\":\"\","
+                     "\"model\": \"%s\",\"temperature\": %d}";
 
-bool openai_curl_setup(CURL **curl) {
-  char *api_key = getenv("OPENAI_API_KEY");
-  if (!api_key || strlen(api_key) <= 50) {
-    printf("OPENAI_API_KEY environment variable not set.\n");
-    return false;
-  }
+struct Openai_easy {
+  CURL *curl;
+  char *model;
+  int max_tokens;
+  double temperature;
+};
 
-  *curl = curl_easy_init();
+typedef struct Openai_easy Openai;
 
-  if (*curl) {
+Openai *openai_easy_init(char *api_key) {
+  CURL *curl;
+  curl = curl_easy_init();
+
+  if (curl) {
     struct curl_slist *headers = NULL;
     char auth_header[100];
     sprintf(auth_header, "Authorization: Bearer %s", api_key);
     headers = curl_slist_append(headers, auth_header);
     headers = curl_slist_append(headers, "Content-Type: application/json");
 
-    curl_easy_setopt(*curl, CURLOPT_URL, API_URL);
-    curl_easy_setopt(*curl, CURLOPT_POST, 1);
-    curl_easy_setopt(*curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(*curl, CURLOPT_WRITEFUNCTION, NULL);
-    curl_easy_setopt(*curl, CURLOPT_WRITEDATA, stdout);
-    return true;
+    curl_easy_setopt(curl, CURLOPT_URL, OPENAI_API_URL);
+    curl_easy_setopt(curl, CURLOPT_POST, 1);
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, stdout);
   }
-  return false;
+
+  Openai *openai = (Openai *)malloc(sizeof(Openai));
+  openai->curl = curl;
+  openai->model = OPENAI_DEFAULT_MODEL;
+  openai->max_tokens = OPENAI_DEFAULT_MAX_TOKENS;
+  openai->temperature = OPENAI_DEFAULT_TEMPERATURE;
+
+  return openai;
 }
 
-void openai_curl_perform(CURL *curl, char *request) {
+char *openai_easy_body(Openai *openai, char *data) {
+  printf("Going there");
+  char *post_data = (char *)malloc(strlen(data) + 200);
+  sprintf(post_data, format, data, openai->model, openai->max_tokens,
+          openai->temperature);
+  return post_data;
+}
+
+void openai_easy_perform(Openai *openai, char *request) {
   CURLcode res;
 
-  if (curl) {
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS,
-                     openai_generate_post_data(request));
-    res = curl_easy_perform(curl);
+  if (openai) {
+    char *body = openai_easy_body(openai, request);
+    curl_easy_setopt(openai->curl, CURLOPT_POSTFIELDS, body);
+    res = curl_easy_perform(openai->curl);
     if (res != CURLE_OK)
       fprintf(stderr, "Calling openai failed: %s\n", curl_easy_strerror(res));
   }
 }
 
-int main(int argc, char *argv[]) {
+void openai_easy_cleanup(Openai *openai) {
+  if (openai) {
+    curl_easy_cleanup(openai->curl);
+    free(openai);
+  }
+}
+
+char *openai_main_getinput() {
   char *request;
   printf("You: ");
   size_t size = 0;
   getline(&request, &size, stdin);
   request[strcspn(request, "\n")] = '\0';
+  return request;
+}
 
-  CURL *curl;
-  if (!openai_curl_setup(&curl))
+int main(int argc, char *argv[]) {
+  char *openai_api_key = getenv("OPENAI_API_KEY");
+  if (!openai_api_key || strlen(openai_api_key) <= 50) {
+    printf("OPENAI_API_KEY environment variable not set.\n");
     return 1;
+  }
 
-  openai_curl_perform(curl, request);
-  curl_easy_cleanup(curl);
+  Openai *openai;
+  openai = openai_easy_init(openai_api_key);
+
+  while (1) {
+    char *request = openai_main_getinput();
+    openai_easy_perform(openai, request);
+    free(request);
+  }
+
+  openai_easy_cleanup(openai);
   return 0;
 }
