@@ -3,22 +3,13 @@
 const char *format = "{\"prompt\":\"%s\",\"max_tokens\": %d,\"stop\":\"\","
                      "\"model\": \"%s\",\"temperature\": %f}";
 
-struct Openai_easy {
-  CURL *curl;
-  char *model;
-  char **stop;
-  int max_tokens;
-  char *template_prompt;
-  double temperature;
-};
-
 OpenAI *openai_easy_init(char *api_key) {
   CURL *curl;
   curl = curl_easy_init();
 
-  if (curl) {
+  if (curl && strlen(api_key) == 51) {
     struct curl_slist *headers = NULL;
-    char auth_header[100];
+    char auth_header[74];
     sprintf(auth_header, "Authorization: Bearer %s", api_key);
     headers = curl_slist_append(headers, auth_header);
     headers = curl_slist_append(headers, "Content-Type: application/json");
@@ -43,29 +34,39 @@ OpenAI *openai_easy_duphandle(OpenAI *openai) {
   OpenAI *openai_dup = (OpenAI *)malloc(sizeof(OpenAI));
   openai_dup->curl = curl_easy_duphandle(openai->curl);
   openai_dup->model = openai->model;
-  openai_dup->max_tokens = OPENAI_DEFAULT_MAX_TOKENS;
-  openai_dup->temperature = OPENAI_DEFAULT_TEMPERATURE;
+  openai_dup->max_tokens = openai->max_tokens;
+  openai_dup->temperature = openai->temperature;
+  openai_dup->top_p = openai->top_p;
+  openai_dup->frequency_penalty = openai->frequency_penalty;
+  openai_dup->presence_penalty = openai->presence_penalty;
 
   return openai_dup;
 }
 
 CURLcode openai_easy_setopt(OpenAI *openai, OpenAIOption option, ...) {
-
   va_list args;
   va_start(args, option);
-
   switch (option) {
-  case OPENAI_MODEL:
+  case OPENAIOPT_MODEL:
     openai->model = va_arg(args, char *);
     break;
-  case OPENAI_MAX_TOKENS:
-    openai->max_tokens = va_arg(args, int);
+  case OPENAIOPT_MAX_TOKENS:
+    openai->max_tokens = va_arg(args, uint);
     break;
-  case OPENAI_TEMPERATURE:
-    openai->temperature = va_arg(args, double);
+  case OPENAIOPT_TEMPERATURE:
+    openai->temperature = (float)va_arg(args, double);
     break;
-  case OPENAI_STOP:
+  case OPENAIOPT_STOP:
     openai->stop = va_arg(args, char **);
+    break;
+  case OPENAIOPT_TOP_P:
+    openai->top_p = (float)va_arg(args, double);
+    break;
+  case OPENAIOPT_PRESENCE_PENALTY:
+    openai->presence_penalty = (float)va_arg(args, double);
+    break;
+  case OPENAIOPT_FREQUENCY_PENALTY:
+    openai->frequency_penalty = (float)va_arg(args, double);
     break;
   default:
     return CURLE_UNKNOWN_OPTION;
@@ -97,6 +98,13 @@ void openai_easy_perform(OpenAI *openai, char *request) {
 void openai_easy_cleanup(OpenAI *openai) {
   if (openai) {
     curl_easy_cleanup(openai->curl);
+    free(openai->model);
+
+    for (uint i = 0; openai->stop[i] != NULL; i++) {
+      free(openai->stop[i]);
+    }
+
+    free(openai->stop);
     free(openai);
   }
 }
