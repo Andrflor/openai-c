@@ -1,4 +1,5 @@
 #include "easy.h"
+#include <curl/curl.h>
 
 const char *format = "{\"prompt\":\"%s\",\"max_tokens\": %d,\"stop\":\"\","
                      "\"model\": \"%s\",\"temperature\": %f}";
@@ -6,11 +7,12 @@ const char *format = "{\"prompt\":\"%s\",\"max_tokens\": %d,\"stop\":\"\","
 struct Openai_easy {
   CURL *curl;
   char *model;
+  char **stop;
   int max_tokens;
   double temperature;
 };
 
-Openai *openai_easy_init(char *api_key) {
+OpenAI *openai_easy_init(char *api_key) {
   CURL *curl;
   curl = curl_easy_init();
 
@@ -28,7 +30,7 @@ Openai *openai_easy_init(char *api_key) {
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, stdout);
   }
 
-  Openai *openai = (Openai *)malloc(sizeof(Openai));
+  OpenAI *openai = (OpenAI *)malloc(sizeof(OpenAI));
   openai->curl = curl;
   openai->model = OPENAI_DEFAULT_MODEL;
   openai->max_tokens = OPENAI_DEFAULT_MAX_TOKENS;
@@ -37,14 +39,36 @@ Openai *openai_easy_init(char *api_key) {
   return openai;
 }
 
-char *openai_easy_body(Openai *openai, char *data) {
+CURLcode openai_easy_setopt(OpenAI *openai, OpenAIOption option, ...) {
+  va_list args;
+  va_start(args, option);
+
+  switch (option) {
+  case OpenAI_Model:
+    openai->model = va_arg(args, char *);
+    break;
+  case OpenAI_MaxTokens:
+    openai->max_tokens = va_arg(args, int);
+    break;
+  case OpenAI_Temperature:
+    openai->temperature = va_arg(args, double);
+    break;
+  default:
+    return CURLE_UNKNOWN_OPTION;
+  }
+
+  va_end(args);
+  return CURLE_OK;
+}
+
+char *openai_easy_body(OpenAI *openai, char *data) {
   char *post_data = (char *)malloc(strlen(data) + 200);
   sprintf(post_data, format, data, openai->max_tokens, openai->model,
           openai->temperature);
   return post_data;
 }
 
-void openai_easy_perform(Openai *openai, char *request) {
+void openai_easy_perform(OpenAI *openai, char *request) {
   CURLcode res;
 
   if (openai) {
@@ -56,7 +80,7 @@ void openai_easy_perform(Openai *openai, char *request) {
   }
 }
 
-void openai_easy_cleanup(Openai *openai) {
+void openai_easy_cleanup(OpenAI *openai) {
   if (openai) {
     curl_easy_cleanup(openai->curl);
     free(openai);
