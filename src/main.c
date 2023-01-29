@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  OpenAI *openai = openai_easy_init(openai_api_key);
+  OpenAI openai = openai_easy_init(openai_api_key);
 
   while (1) {
     char *request = openai_main_getinput();

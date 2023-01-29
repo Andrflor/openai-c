@@ -1,11 +1,22 @@
 #include "easy.h"
 
 const char *format = "{\"prompt\":\"%s\",\"max_tokens\": %d,\"stop\":\"\","
-                     "\"model\": \"%s\",\"temperature\": %f}";
+                     "\"model\": \"%s\",\"temperature\": %f, \"top_p\": %f, "
+                     "\"frequency_penalty\": %f, \"presence_penalty\": %f}";
 
-OpenAI *openai_easy_init(char *api_key) {
+typedef struct OpenAIStruct {
   CURL *curl;
-  curl = curl_easy_init();
+  char *model;
+  char **stop;
+  uint max_tokens;
+  float presence_penalty;
+  float frequency_penalty;
+  float top_p;
+  float temperature;
+} OpenAIStruct;
+
+OpenAI openai_easy_init(char *api_key) {
+  CURL *curl = curl_easy_init();
 
   if (curl && strlen(api_key) == 51) {
     struct curl_slist *headers = NULL;
@@ -21,17 +32,21 @@ OpenAI *openai_easy_init(char *api_key) {
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, stdout);
   }
 
-  OpenAI *openai = (OpenAI *)malloc(sizeof(OpenAI));
+  OpenAIStruct *openai = (OpenAIStruct *)malloc(sizeof(OpenAIStruct));
   openai->curl = curl;
   openai->model = OPENAI_DEFAULT_MODEL;
   openai->max_tokens = OPENAI_DEFAULT_MAX_TOKENS;
   openai->temperature = OPENAI_DEFAULT_TEMPERATURE;
+  openai->stop = OPENAI_DEFAULT_STOP;
+  openai->top_p = OPENAI_DEFAULT_TOP_P;
+  openai->frequency_penalty = OPENAI_DEFAULT_FREQUENCY_PENALTY;
+  openai->presence_penalty = OPENAIOPT_PRESENCE_PENALTY;
 
   return openai;
 }
 
-OpenAI *openai_easy_duphandle(OpenAI *openai) {
-  OpenAI *openai_dup = (OpenAI *)malloc(sizeof(OpenAI));
+OpenAI openai_easy_duphandle(OpenAI openai) {
+  OpenAIStruct *openai_dup = (OpenAIStruct *)malloc(sizeof(OpenAIStruct));
   openai_dup->curl = curl_easy_duphandle(openai->curl);
   openai_dup->model = openai->model;
   openai_dup->max_tokens = openai->max_tokens;
@@ -43,7 +58,7 @@ OpenAI *openai_easy_duphandle(OpenAI *openai) {
   return openai_dup;
 }
 
-CURLcode openai_easy_setopt(OpenAI *openai, OpenAIOption option, ...) {
+CURLcode openai_easy_setopt(OpenAI openai, OpenAIOption option, ...) {
   va_list args;
   va_start(args, option);
   switch (option) {
@@ -76,14 +91,15 @@ CURLcode openai_easy_setopt(OpenAI *openai, OpenAIOption option, ...) {
   return CURLE_OK;
 }
 
-char *openai_easy_body(OpenAI *openai, char *data) {
+char *openai_easy_body(OpenAI openai, char *data) {
   char *post_data = (char *)malloc(strlen(data) + 200);
   sprintf(post_data, format, data, openai->max_tokens, openai->model,
-          openai->temperature);
+          openai->temperature, openai->top_p, openai->frequency_penalty,
+          openai->presence_penalty);
   return post_data;
 }
 
-void openai_easy_perform(OpenAI *openai, char *request) {
+void openai_easy_perform(OpenAI openai, char *request) {
   CURLcode res;
 
   if (openai) {
@@ -92,10 +108,11 @@ void openai_easy_perform(OpenAI *openai, char *request) {
     res = curl_easy_perform(openai->curl);
     if (res != CURLE_OK)
       fprintf(stderr, "Calling openai failed: %s\n", curl_easy_strerror(res));
+    free(body);
   }
 }
 
-void openai_easy_cleanup(OpenAI *openai) {
+void openai_easy_cleanup(OpenAI openai) {
   if (openai) {
     curl_easy_cleanup(openai->curl);
     free(openai->model);

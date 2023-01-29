@@ -9,7 +9,7 @@
 #define OPENAI_DEFAULT_PRESENCE_PENALTY 0
 #define OPENAI_DEFAULT_MAX_TOKENS 2048
 #define OPENAI_DEFAULT_TEMPERATURE 0.7
-#define OPENAI_DEFAULT_STOP {}
+#define OPENAI_DEFAULT_STOP NULL
 #define OPENAI_DEFAULT_TOP_P 1
 
 typedef enum {
@@ -22,28 +22,15 @@ typedef enum {
     OPENAIOPT_FREQUENCY_PENALTY,
 }  OpenAIOption;
 
+typedef struct OpenAIStruct* OpenAI;
 
-typedef struct {
-  CURL *curl;
-  char *model;
-  char **stop;
-  uint max_tokens;
-  float presence_penalty;
-  float frequency_penalty;
-  float top_p;
-  float temperature;
-} OpenAI;
-
-// typedef void OpenAI;
-
-OpenAI *openai_easy_init(char *api_key);
-void openai_easy_cleanup(OpenAI *openai);
+OpenAI openai_easy_init(char *api_key);
+void openai_easy_cleanup(OpenAI openai);
 
 
-void openai_easy_perform(OpenAI *openai, char *request);
+void openai_easy_perform(OpenAI openai, char *request);
 
 /* This preprocessor magic that replaces a call with the exact same call is
    only done to make sure application authors pass exactly three arguments
    to these functions. */
 #define openai_easy_setopt(handle,opt,param) openai_easy_setopt(handle,opt,param)
-CURLcode openai_easy_setopt(OpenAI *openai, OpenAIOption option, ...);
