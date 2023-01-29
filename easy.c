@@ -1,5 +1,4 @@
 #include "easy.h"
-#include <curl/curl.h>
 
 const char *format = "{\"prompt\":\"%s\",\"max_tokens\": %d,\"stop\":\"\","
                      "\"model\": \"%s\",\"temperature\": %f}";
@@ -9,6 +8,7 @@ struct Openai_easy {
   char *model;
   char **stop;
   int max_tokens;
+  char *template_prompt;
   double temperature;
 };
 
@@ -37,6 +37,16 @@ OpenAI *openai_easy_init(char *api_key) {
   openai->temperature = OPENAI_DEFAULT_TEMPERATURE;
 
   return openai;
+}
+
+OpenAI *openai_easy_duphandle(OpenAI *openai) {
+  OpenAI *openai_dup = (OpenAI *)malloc(sizeof(OpenAI));
+  openai_dup->curl = curl_easy_duphandle(openai->curl);
+  openai_dup->model = openai->model;
+  openai_dup->max_tokens = OPENAI_DEFAULT_MAX_TOKENS;
+  openai_dup->temperature = OPENAI_DEFAULT_TEMPERATURE;
+
+  return openai_dup;
 }
 
 CURLcode openai_easy_setopt(OpenAI *openai, OpenAIOption option, ...) {

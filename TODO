@@ -4,7 +4,6 @@ code:
 	implement duphandle
 	split with proper name or foldering
 	figure out proper name for a good api
-	add option to set model max_tokens and temperature
 	maybe use some void thing on Openai ??
 	add suport for stream
 

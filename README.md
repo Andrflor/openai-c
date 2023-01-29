@@ -1,5 +1,5 @@
 # openai-c
-This is a pure c implementation of a clien the openai api using libcurl
+This is a pure c implementation of a client for openai gpt3 api using libcurl
 
 ## License
 MIT do the Hell you want with it

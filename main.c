@@ -1,6 +1,6 @@
 #include "easy.h"
 
-char *openai_main_getinput() {
+char *openai_main_getinput(void) {
   char *request;
   printf("You: ");
   size_t size = 0;
@@ -16,9 +16,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  OpenAI *openai;
-  openai = openai_easy_init(openai_api_key);
-  openai_easy_setopt(openai, OPENAI_MAX_TOKENS, 12);
+  OpenAI *openai = openai_easy_init(openai_api_key);
 
   while (1) {
     char *request = openai_main_getinput();

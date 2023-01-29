@@ -1,5 +1,4 @@
 #include <curl/curl.h>
-#include <curl/easy.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -15,6 +14,7 @@ typedef enum {
     OPENAI_MODEL,
     OPENAI_MAX_TOKENS,
     OPENAI_TEMPERATURE,
+    OPENAI_TEMPLATE_PROMPT,
 }  OpenAIOption;
 
 typedef struct Openai_easy OpenAI;
