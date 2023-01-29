@@ -2,7 +2,7 @@ compile:
 	mkdir -p build && gcc -lcurl src/main.c src/easy.c -o build/openai
 
 run:
-	tcc -lcurl src/main.c src/easy.c -o build/openai && ./build/openai
+	mkdir -p build && tcc -lcurl src/main.c src/easy.c -o build/openai && ./build/openai
 
 clean:
 	rm -r build
