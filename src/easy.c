@@ -40,7 +40,7 @@ OpenAI openai_easy_init(char *api_key) {
   openai->stop = OPENAI_DEFAULT_STOP;
   openai->top_p = OPENAI_DEFAULT_TOP_P;
   openai->frequency_penalty = OPENAI_DEFAULT_FREQUENCY_PENALTY;
-  openai->presence_penalty = OPENAIOPT_PRESENCE_PENALTY;
+  openai->presence_penalty = OPENAI_DEFAULT_PRESENCE_PENALTY;
 
   return openai;
 }
