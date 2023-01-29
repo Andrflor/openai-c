@@ -40,18 +40,22 @@ OpenAI *openai_easy_init(char *api_key) {
 }
 
 CURLcode openai_easy_setopt(OpenAI *openai, OpenAIOption option, ...) {
+
   va_list args;
   va_start(args, option);
 
   switch (option) {
-  case OpenAI_Model:
+  case OPENAI_MODEL:
     openai->model = va_arg(args, char *);
     break;
-  case OpenAI_MaxTokens:
+  case OPENAI_MAX_TOKENS:
     openai->max_tokens = va_arg(args, int);
     break;
-  case OpenAI_Temperature:
+  case OPENAI_TEMPERATURE:
     openai->temperature = va_arg(args, double);
+    break;
+  case OPENAI_STOP:
+    openai->stop = va_arg(args, char **);
     break;
   default:
     return CURLE_UNKNOWN_OPTION;

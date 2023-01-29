@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
 
   OpenAI *openai;
   openai = openai_easy_init(openai_api_key);
+  openai_easy_setopt(openai, OPENAI_MAX_TOKENS, 12);
 
   while (1) {
     char *request = openai_main_getinput();

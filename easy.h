@@ -11,10 +11,10 @@
 #define OPENAI_DEFAULT_TEMPERATURE 0.7
 
 typedef enum {
-    OpenAI_Stop,
-    OpenAI_Model,
-    OpenAI_MaxTokens,
-    OpenAI_Temperature,
+    OPENAI_STOP,
+    OPENAI_MODEL,
+    OPENAI_MAX_TOKENS,
+    OPENAI_TEMPERATURE,
 }  OpenAIOption;
 
 typedef struct Openai_easy OpenAI;
@@ -24,4 +24,9 @@ void openai_easy_cleanup(OpenAI *openai);
 
 
 void openai_easy_perform(OpenAI *openai, char *request);
+
+/* This preprocessor magic that replaces a call with the exact same call is
+   only done to make sure application authors pass exactly three arguments
+   to these functions. */
+#define openai_easy_setopt(handle,opt,param) openai_easy_setopt(handle,opt,param)
 CURLcode openai_easy_setopt(OpenAI *openai, OpenAIOption option, ...);
