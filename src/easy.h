@@ -1,5 +1,4 @@
 #include <curl/curl.h>
-#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -27,6 +26,7 @@ typedef struct OpenAIStruct* OpenAI;
 OpenAI openai_easy_init(char *api_key);
 void openai_easy_cleanup(OpenAI openai);
 
+OpenAI openai_easy_duphandle(OpenAI openai);
 
 void openai_easy_perform(OpenAI openai, char *request);
 

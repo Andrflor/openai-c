@@ -1,4 +1,5 @@
 #include "easy.h"
+#include "util.h"
 
 const char *format = "{\"prompt\":\"%s\",\"max_tokens\": %d,\"stop\":\"\","
                      "\"model\": \"%s\",\"temperature\": %f, \"top_p\": %f, "
@@ -48,7 +49,8 @@ OpenAI openai_easy_init(char *api_key) {
 OpenAI openai_easy_duphandle(OpenAI openai) {
   OpenAIStruct *openai_dup = (OpenAIStruct *)malloc(sizeof(OpenAIStruct));
   openai_dup->curl = curl_easy_duphandle(openai->curl);
-  openai_dup->model = openai->model;
+  openai_dup->model = strdup(openai->model);
+  openai_dup->stop = arr_strdup(openai->stop);
   openai_dup->max_tokens = openai->max_tokens;
   openai_dup->temperature = openai->temperature;
   openai_dup->top_p = openai->top_p;
