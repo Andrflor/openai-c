@@ -1,11 +1,28 @@
+TCC=tcc
+CC=gcc
+
+CFLAGS=-lcurl
+
+SRC=src
+BUILD=build
+TEST=tests
+
+BIN=$(BUILD)/openai
+
+SRCS=$(wildcard $(SRC)/*.c)
+TESTS=$(wildcard $(TEST)/*.c))
+
+INITBUILD=mkdir -p $(BUILD)
+COMPILE=$(INITBUILD) && $(TCC) $(CFLAGS) $(SRCS)
+
 compile:
-	mkdir -p build && gcc -lcurl src/*.c -o build/openai
+	$(COMPILE) -o $(BIN)
 
 run:
-	mkdir -p build && tcc -lcurl src/*.c -o build/openai && ./build/openai
+	$(COMPILE) -o $(BIN) && ./$(BIN)
 
 clean:
 	rm -r build
 
 debug:
-	mkdir -p build && tcc -lcurl -g src/*.c -o build/openai && gdb -ex run build/openai
+	$(COMPILE) -o $(BIN)  && gdb -ex run $(BIN)
