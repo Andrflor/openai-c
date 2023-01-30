@@ -15,14 +15,14 @@ TESTS=$(wildcard $(TEST)/*.c))
 INITBUILD=mkdir -p $(BUILD)
 COMPILE=$(INITBUILD) && $(TCC) $(CFLAGS) $(SRCS)
 
-compile:
+all:
 	$(COMPILE) -o $(BIN)
 
 run:
 	$(COMPILE) -o $(BIN) && ./$(BIN)
 
 clean:
-	rm -r build
+	rm -r $(BUILD)
 
 debug:
 	$(COMPILE) -o $(BIN)  && gdb -ex run $(BIN)
