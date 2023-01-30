@@ -1,7 +1,11 @@
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "easy.h"
 #include "util.h"
 
-const char *format = "{\"prompt\":\"%s\",\"max_tokens\": %d,\"stop\":\"\","
+const char *format = "{\"prompt\":\"%s\",\"max_tokens\": %d,\"stop\":\"%s\","
                      "\"model\": \"%s\",\"temperature\": %f, \"top_p\": %f, "
                      "\"frequency_penalty\": %f, \"presence_penalty\": %f}";
 
@@ -95,9 +99,12 @@ CURLcode openai_easy_setopt(OpenAI openai, OpenAIOption option, ...) {
 
 char *openai_easy_body(OpenAI openai, char *data) {
   char *post_data = (char *)malloc(strlen(data) + 200);
-  sprintf(post_data, format, data, openai->max_tokens, openai->model,
+  char *stop = arr_strpretty(openai->stop);
+  sprintf(post_data, format, data, openai->max_tokens, stop, openai->model,
           openai->temperature, openai->top_p, openai->frequency_penalty,
           openai->presence_penalty);
+  free(stop);
+  printf("%s\n", post_data);
   return post_data;
 }
 

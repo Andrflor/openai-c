@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "easy.h"
 
 char *openai_main_getinput(void) {
@@ -17,6 +21,13 @@ int main(int argc, char *argv[]) {
   }
 
   OpenAI openai = openai_easy_init(openai_api_key);
+  char *stop[] = {};
+  openai_easy_setopt(openai, OPENAIOPT_STOP, stop);
+  openai_easy_setopt(openai, OPENAIOPT_MODEL, "text-davinci-002");
+  openai_easy_setopt(openai, OPENAIOPT_TEMPERATURE, 0.75);
+  openai_easy_setopt(openai, OPENAIOPT_FREQUENCY_PENALTY, 0.1);
+  openai_easy_setopt(openai, OPENAIOPT_PRESENCE_PENALTY, 0.1);
+  openai_easy_setopt(openai, OPENAIOPT_TOP_P, 0.9);
 
   while (1) {
     char *request = openai_main_getinput();

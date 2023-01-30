@@ -1,12 +1,9 @@
 code:
 	parse the actual response
 	handle errors from api
-	split with proper name or foldering
 	figure out how to properly handle pointers on duphandle and setopt
-	add the new parameters to format and easy_init with default
-	figure out proper name for a good api
+	add testing
 	add suport for stream with another parameter
-	maybe use some void thing on Openai ??
 	maybe something for templating prompt ??
 
 main:

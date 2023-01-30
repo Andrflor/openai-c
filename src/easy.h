@@ -1,6 +1,4 @@
 #include <curl/curl.h>
-#include <stdlib.h>
-#include <string.h>
 
 #define OPENAI_API_URL "https://api.openai.com/v1/completions"
 #define OPENAI_DEFAULT_MODEL "text-davinci-003"
@@ -34,3 +32,4 @@ void openai_easy_perform(OpenAI openai, char *request);
    only done to make sure application authors pass exactly three arguments
    to these functions. */
 #define openai_easy_setopt(handle,opt,param) openai_easy_setopt(handle,opt,param)
+CURLcode openai_easy_setopt(OpenAI openai, OpenAIOption option, ...);

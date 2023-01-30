@@ -8,4 +8,4 @@ clean:
 	rm -r build
 
 debug:
-	mkdir -p build && tcc -lcurl -g src/*.c s-o build/openai && gdb -ex run build/openai
+	mkdir -p build && tcc -lcurl -g src/*.c -o build/openai && gdb -ex run build/openai
