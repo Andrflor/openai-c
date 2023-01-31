@@ -126,7 +126,7 @@ void openai_easy_cleanup(OpenAI openai) {
     curl_easy_cleanup(openai->curl);
     free(openai->model);
 
-    for (uint i = 0; openai->stop[i] != NULL; i++) {
+    for (int i = 0; openai->stop[i] != NULL; i++) {
       free(openai->stop[i]);
     }
 
