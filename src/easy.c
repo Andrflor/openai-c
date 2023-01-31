@@ -5,7 +5,7 @@
 #include "easy.h"
 #include "util.h"
 
-const char *format = "{\"prompt\":\"%s\",\"max_tokens\": %d,\"stop\":\"%s\","
+const char *format = "{\"prompt\":\"%s\",\"max_tokens\": %d,\"stop\": %s,"
                      "\"model\": \"%s\",\"temperature\": %f, \"top_p\": %f, "
                      "\"frequency_penalty\": %f, \"presence_penalty\": %f}";
 

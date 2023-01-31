@@ -1,5 +1,6 @@
 TCC=tcc
 CC=gcc
+DEBUGGER=gdb
 
 CFLAGS=-lcurl
 
@@ -25,4 +26,4 @@ clean:
 	rm -r $(BUILD)
 
 debug:
-	$(COMPILE) -o $(BIN)  && gdb -ex run $(BIN)
+	$(COMPILE) -o $(BIN)  && $(DEBUGGER) $(BIN)

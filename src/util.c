@@ -19,27 +19,27 @@ char **arr_strdup(char **original) {
   return copy;
 }
 
-// TODO: fix that function
-char *arr_strpretty(char **arr) {
-  if (arr == NULL)
+char *arr_strpretty(char *arr[]) {
+  if (arr == NULL || arr[0] == NULL)
     return strdup("[]");
-  char *json;
-  int i, j, k, len = 2;
+  char **ptr = arr;
+  int length = strlen(*ptr);
 
-  for (i = 0; arr[i] != NULL; i++) {
-    len += strlen(arr[i]) + 2;
+  while (*++ptr) {
+    length += strlen(*ptr) + 3;
   }
 
-  json = malloc(len + 1);
+  char *json = (char *)malloc((length + 1) * sizeof(char *));
   strcpy(json, "[");
 
-  for (i = 0, j = 1; arr[i] != NULL; i++, j += k) {
-    k = sprintf(json + j, "\"%s\"", arr[i]);
-    if (arr[i + 1] != NULL) {
-      json[j + k++] = ',';
-    }
+  for (int i = 0; arr[i] != NULL; i++) {
+    strcat(json, "\"");
+    strcat(json, arr[i]);
+    strcat(json, "\"");
+    if (arr[i + 1] != NULL)
+      strcat(json, ",");
   }
-
   strcat(json, "]");
+
   return json;
 }

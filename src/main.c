@@ -21,7 +21,8 @@ int main(int argc, char *argv[]) {
   }
 
   OpenAI openai = openai_easy_init(openai_api_key);
-  char *stop[] = {};
+
+  char *stop[4] = {"\\n", "\\t", "wwwww"};
   openai_easy_setopt(openai, OPENAIOPT_STOP, stop);
   openai_easy_setopt(openai, OPENAIOPT_MODEL, "text-davinci-002");
   openai_easy_setopt(openai, OPENAIOPT_TEMPERATURE, 0.75);
