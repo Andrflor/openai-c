@@ -4,6 +4,7 @@
 #include <string.h>
 
 char **arr_strdup(char **original) {
+  int i;
   int length = 0;
   char **ptr = original;
 
@@ -11,7 +12,8 @@ char **arr_strdup(char **original) {
     length++;
 
   char **copy = (char **)malloc((length + 1) * sizeof(char *));
-  for (int i = 0; i < length; ++i) {
+
+  for (i = 0; i < length; ++i) {
     copy[i] = strdup(original[i]);
   }
   copy[length] = NULL;
@@ -32,7 +34,8 @@ char *arr_strpretty(char *arr[]) {
   char *json = (char *)malloc((length + 1) * sizeof(char *));
   strcpy(json, "[");
 
-  for (int i = 0; arr[i] != NULL; i++) {
+  int i;
+  for (i = 0; arr[i] != NULL; i++) {
     strcat(json, "\"");
     strcat(json, arr[i]);
     strcat(json, "\"");

@@ -13,7 +13,7 @@ typedef struct OpenAIStruct {
   CURL *curl;
   char *model;
   char **stop;
-  uint max_tokens;
+  int max_tokens;
   float presence_penalty;
   float frequency_penalty;
   float top_p;
@@ -72,7 +72,7 @@ CURLcode openai_easy_setopt(OpenAI openai, OpenAIOption option, ...) {
     openai->model = va_arg(args, char *);
     break;
   case OPENAIOPT_MAX_TOKENS:
-    openai->max_tokens = va_arg(args, uint);
+    openai->max_tokens = va_arg(args, int);
     break;
   case OPENAIOPT_TEMPERATURE:
     openai->temperature = (float)va_arg(args, double);
@@ -126,7 +126,8 @@ void openai_easy_cleanup(OpenAI openai) {
     curl_easy_cleanup(openai->curl);
     free(openai->model);
 
-    for (int i = 0; openai->stop[i] != NULL; i++) {
+    int i;
+    for (i = 0; openai->stop[i] != NULL; i++) {
       free(openai->stop[i]);
     }
 
