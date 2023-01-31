@@ -26,4 +26,4 @@ clean:
 	rm -r $(BUILD)
 
 debug:
-	$(COMPILE) -g -o $(BIN)  && $(DEBUGGER) $(BIN)
+	$(COMPILE) -g -o $(BIN)  && $(DEBUGGER) -q -ex run $(BIN)
