@@ -21,10 +21,10 @@ typedef struct OpenAIStruct {
   float temperature;
 } OpenAIStruct;
 
-
-
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata) {
-  /* TODO: implement adding data by casting userdata to OpenAIResponse */
+  struct OpenAIResponse *openai_response = (struct OpenAIResponse *)userdata;
+
+  /* TODO: implement parsing body */
   return size * nmemb;
 }
 
@@ -124,6 +124,8 @@ struct OpenAIResponse openai_easy_perform(OpenAI openai, char *request) {
   if (openai) {
     char *body = openai_easy_body(openai, request);
     curl_easy_setopt(openai->curl, CURLOPT_POSTFIELDS, body);
+    curl_easy_setopt(openai->curl, CURLOPT_WRITEDATA, &openai_response);
+
     res = curl_easy_perform(openai->curl);
     if (res != CURLE_OK) {
       openai_response.code = res;
