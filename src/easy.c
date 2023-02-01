@@ -1,4 +1,5 @@
 #include <stdarg.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -20,6 +21,13 @@ typedef struct OpenAIStruct {
   float temperature;
 } OpenAIStruct;
 
+
+
+size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata) {
+  /* TODO: implement adding data by casting userdata to OpenAIResponse */
+  return size * nmemb;
+}
+
 OpenAI openai_easy_init(char *api_key) {
   CURL *curl = curl_easy_init();
 
@@ -34,9 +42,7 @@ OpenAI openai_easy_init(char *api_key) {
     curl_easy_setopt(curl, CURLOPT_POST, 1);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
-    /* TODO: handle curl result here */
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, stdout);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
   }
 
   OpenAIStruct *openai = (OpenAIStruct *)malloc(sizeof(OpenAIStruct));
@@ -110,17 +116,27 @@ char *openai_easy_body(OpenAI openai, char *data) {
   return post_data;
 }
 
-void openai_easy_perform(OpenAI openai, char *request) {
+struct OpenAIResponse openai_easy_perform(OpenAI openai, char *request) {
   CURLcode res;
+
+  struct OpenAIResponse openai_response;
 
   if (openai) {
     char *body = openai_easy_body(openai, request);
     curl_easy_setopt(openai->curl, CURLOPT_POSTFIELDS, body);
     res = curl_easy_perform(openai->curl);
-    if (res != CURLE_OK)
-      fprintf(stderr, "Calling openai failed: %s\n", curl_easy_strerror(res));
+    if (res != CURLE_OK) {
+      openai_response.code = res;
+      const char *error_code = curl_easy_strerror(res);
+      /* TODO: handle error here
+        Or maybe Add it to error function ?? */
+
+      /* openai_response.data = ; */
+      sprintf(openai_response.data, "Calling openai failed: %s", error_code);
+    }
     free(body);
   }
+  return openai_response;
 }
 
 void openai_easy_cleanup(OpenAI openai) {

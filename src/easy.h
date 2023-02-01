@@ -21,12 +21,17 @@ typedef enum {
 
 typedef struct OpenAIStruct* OpenAI;
 
+struct OpenAIResponse {
+  char* data;
+  CURLcode code;
+};
+
 OpenAI openai_easy_init(char *api_key);
 void openai_easy_cleanup(OpenAI openai);
 
 OpenAI openai_easy_duphandle(OpenAI openai);
 
-void openai_easy_perform(OpenAI openai, char *request);
+struct OpenAIResponse openai_easy_perform(OpenAI openai, char *request);
 
 /* This preprocessor magic that replaces a call with the exact same call is
    only done to make sure application authors pass exactly three arguments
