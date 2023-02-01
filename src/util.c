@@ -14,7 +14,7 @@ char **arr_strdup(char **original) {
   while (*ptr++)
     length++;
 
-  char **copy = (char **)malloc((length + 1) * sizeof(char *));
+  char **copy = (char **)malloc((length) * sizeof(char *));
 
   for (i = 0; i < length; ++i) {
     copy[i] = strdup(original[i]);
@@ -35,7 +35,7 @@ char *arr_strpretty(char **arr) {
     length += strlen(*ptr) + 3;
   }
 
-  char *json = (char *)malloc((length + 1) * sizeof(char *));
+  char *json = (char *)malloc((length) * sizeof(char *));
   strcpy(json, "[");
 
   int i;
