@@ -1,10 +1,12 @@
 code:
 	parse the actual response
 	handle errors from api
-	figure out how to properly handle pointers on duphandle and setopt
 	add testing
 	add suport for stream with another parameter
 	maybe something for templating prompt ??
+
+fixes:
+	cleanup is segfaulting...
 
 main:
 	parse user commands

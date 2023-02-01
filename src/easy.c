@@ -98,13 +98,13 @@ CURLcode openai_easy_setopt(OpenAI openai, OpenAIOption option, ...) {
 }
 
 char *openai_easy_body(OpenAI openai, char *data) {
-  char *post_data = (char *)malloc(strlen(data) + 200);
   char *stop = arr_strpretty(openai->stop);
+  char *post_data =
+      (char *)malloc(strlen(data) + strlen(stop) + strlen(openai->model) + 160);
   sprintf(post_data, format, data, openai->max_tokens, stop, openai->model,
           openai->temperature, openai->top_p, openai->frequency_penalty,
           openai->presence_penalty);
   free(stop);
-  printf("%s\n", post_data);
   return post_data;
 }
 
