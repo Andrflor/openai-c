@@ -1,5 +1,4 @@
 #include <stdarg.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -24,6 +23,7 @@ typedef struct OpenAIStruct {
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata) {
   struct OpenAIResponse *openai_response = (struct OpenAIResponse *)userdata;
 
+  printf("%s", ptr);
   /* TODO: implement parsing body */
   return size * nmemb;
 }
@@ -130,13 +130,17 @@ struct OpenAIResponse openai_easy_perform(OpenAI openai, char *request) {
     if (res != CURLE_OK) {
       openai_response.code = res;
       const char *error_code = curl_easy_strerror(res);
-      /* TODO: handle error here
-        Or maybe Add it to error function ?? */
-
-      /* openai_response.data = ; */
+      openai_response.data =
+          (char *)malloc(sizeof(char) * (strlen(error_code) + 22));
       sprintf(openai_response.data, "Calling openai failed: %s", error_code);
+    } else {
+      curl_easy_getinfo(openai->curl, CURLINFO_RESPONSE_CODE,
+                        &openai_response.code);
     }
     free(body);
+  } else {
+    openai_response.code = CURLE_FAILED_INIT;
+    sprintf(openai_response.data, "OpenAI handle is not initiated properly");
   }
   return openai_response;
 }

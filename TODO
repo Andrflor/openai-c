@@ -12,8 +12,5 @@ main:
 	parse user commands
 	make help to guide user
 
-makefile:
-	make debug a bit more straight forward
-
 readme:
 	add information on make and on how to use
