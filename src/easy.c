@@ -33,6 +33,8 @@ OpenAI openai_easy_init(char *api_key) {
     curl_easy_setopt(curl, CURLOPT_URL, OPENAI_API_URL);
     curl_easy_setopt(curl, CURLOPT_POST, 1);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+    /* TODO: handle curl result here */
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, stdout);
   }
