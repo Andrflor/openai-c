@@ -4,6 +4,9 @@
 #include <string.h>
 
 char **arr_strdup(char **original) {
+  if (original == NULL)
+    return NULL;
+
   int i;
   int length = 0;
   char **ptr = original;
@@ -21,9 +24,10 @@ char **arr_strdup(char **original) {
   return copy;
 }
 
-char *arr_strpretty(char *arr[]) {
+char *arr_strpretty(char **arr) {
   if (arr == NULL || arr[0] == NULL)
     return strdup("[]");
+
   char **ptr = arr;
   int length = strlen(*ptr);
 
