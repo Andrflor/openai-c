@@ -4,9 +4,6 @@ code:
 	maybe something for templating prompt ??
   check memory leaks
 
-fixes:
-	cleanup is segfaulting...
-
 main:
 	parse user commands
 	make help to guide user

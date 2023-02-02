@@ -87,7 +87,7 @@ CURLcode openai_easy_setopt(OpenAI openai, OpenAIOption option, ...) {
   va_start(args, option);
   switch (option) {
   case OPENAIOPT_MODEL:
-    openai->model = va_arg(args, char *);
+    openai->model = strdup(va_arg(args, char *));
     break;
   case OPENAIOPT_MAX_TOKENS:
     openai->max_tokens = va_arg(args, int);
@@ -96,7 +96,7 @@ CURLcode openai_easy_setopt(OpenAI openai, OpenAIOption option, ...) {
     openai->temperature = (float)va_arg(args, double);
     break;
   case OPENAIOPT_STOP:
-    openai->stop = va_arg(args, char **);
+    openai->stop = arr_strdup(va_arg(args, char **));
     break;
   case OPENAIOPT_TOP_P:
     openai->top_p = (float)va_arg(args, double);

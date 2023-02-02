@@ -30,13 +30,11 @@ int main(int argc, char *argv[]) {
   openai_easy_setopt(openai, OPENAIOPT_PRESENCE_PENALTY, 0.1);
   openai_easy_setopt(openai, OPENAIOPT_TOP_P, 0.9);
 
-  while (1) {
-    char *request = openai_main_getinput();
-    struct OpenAIResponse response = openai_easy_perform(openai, request);
-    printf("Response %s\n", response.data);
-    printf("Code %i\n", response.code);
-    free(request);
-  }
+  char *request = openai_main_getinput();
+  struct OpenAIResponse response = openai_easy_perform(openai, request);
+  printf("Response %s\n", response.data);
+  printf("Code %i\n", response.code);
+  free(request);
 
   openai_easy_cleanup(openai);
   return 0;

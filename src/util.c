@@ -14,7 +14,7 @@ char **arr_strdup(char **original) {
   while (*ptr++)
     length++;
 
-  char **copy = (char **)malloc((length) * sizeof(char *));
+  char **copy = (char **)malloc((length + 1) * sizeof(char *));
 
   for (i = 0; i < length; ++i) {
     copy[i] = strdup(original[i]);
