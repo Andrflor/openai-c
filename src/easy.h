@@ -10,19 +10,19 @@
 #define OPENAI_DEFAULT_TOP_P 1
 
 typedef enum {
-    OPENAIOPT_STOP,
-    OPENAIOPT_MODEL,
-    OPENAIOPT_TOP_P,
-    OPENAIOPT_MAX_TOKENS,
-    OPENAIOPT_TEMPERATURE,
-    OPENAIOPT_PRESENCE_PENALTY,
-    OPENAIOPT_FREQUENCY_PENALTY,
-}  OpenAIOption;
+  OPENAIOPT_STOP,
+  OPENAIOPT_MODEL,
+  OPENAIOPT_TOP_P,
+  OPENAIOPT_MAX_TOKENS,
+  OPENAIOPT_TEMPERATURE,
+  OPENAIOPT_PRESENCE_PENALTY,
+  OPENAIOPT_FREQUENCY_PENALTY,
+} OpenAIOption;
 
-typedef struct OpenAIStruct* OpenAI;
+typedef struct OpenAIStruct *OpenAI;
 
 struct OpenAIResponse {
-  char* data;
+  char *data;
   CURLcode code;
 };
 
@@ -36,5 +36,6 @@ struct OpenAIResponse openai_easy_perform(OpenAI openai, char *request);
 /* This preprocessor magic that replaces a call with the exact same call is
    only done to make sure application authors pass exactly three arguments
    to these functions. */
-#define openai_easy_setopt(handle,opt,param) openai_easy_setopt(handle,opt,param)
+#define openai_easy_setopt(handle, opt, param)                                 \
+  openai_easy_setopt(handle, opt, param)
 CURLcode openai_easy_setopt(OpenAI openai, OpenAIOption option, ...);
