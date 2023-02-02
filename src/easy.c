@@ -57,10 +57,10 @@ OpenAI openai_easy_init(char *api_key) {
 
   OpenAIStruct *openai = (OpenAIStruct *)malloc(sizeof(OpenAIStruct));
   openai->curl = curl;
-  openai->model = OPENAI_DEFAULT_MODEL;
+  openai->model = strdup(OPENAI_DEFAULT_MODEL);
   openai->max_tokens = OPENAI_DEFAULT_MAX_TOKENS;
   openai->temperature = OPENAI_DEFAULT_TEMPERATURE;
-  openai->stop = OPENAI_DEFAULT_STOP;
+  openai->stop = arr_strdup(OPENAI_DEFAULT_STOP);
   openai->top_p = OPENAI_DEFAULT_TOP_P;
   openai->frequency_penalty = OPENAI_DEFAULT_FREQUENCY_PENALTY;
   openai->presence_penalty = OPENAI_DEFAULT_PRESENCE_PENALTY;
@@ -158,14 +158,20 @@ struct OpenAIResponse openai_easy_perform(OpenAI openai, char *request) {
 void openai_easy_cleanup(OpenAI openai) {
   if (openai) {
     curl_easy_cleanup(openai->curl);
-    free(openai->model);
 
-    int i;
-    for (i = 0; openai->stop[i] != NULL; i++) {
-      free(openai->stop[i]);
+    if (openai->model) {
+      free(openai->model);
     }
 
-    free(openai->stop);
+    if (openai->stop) {
+      int i;
+      for (i = 0; openai->stop[i]; i++) {
+        free(openai->stop[i]);
+      }
+
+      free(openai->stop);
+    }
+
     free(openai);
   }
 }

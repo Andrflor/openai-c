@@ -26,7 +26,7 @@ char **arr_strdup(char **original) {
 
 char *arr_strpretty(char **arr) {
   if (arr == NULL || arr[0] == NULL)
-    return strdup("[]");
+    return strdup("\"\"");
 
   char **ptr = arr;
   int length = strlen(*ptr);

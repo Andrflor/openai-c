@@ -3,6 +3,7 @@ code:
 	add suport for stream with another parameter
 	maybe something for templating prompt ??
   check memory leaks
+  use less heap allocation ??
 
 main:
 	parse user commands
