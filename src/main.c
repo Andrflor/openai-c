@@ -32,7 +32,9 @@ int main(int argc, char *argv[]) {
 
   while (1) {
     char *request = openai_main_getinput();
-    openai_easy_perform(openai, request);
+    struct OpenAIResponse response = openai_easy_perform(openai, request);
+    printf("Response %s\n", response.data);
+    printf("Code %i\n", response.code);
     free(request);
   }
 

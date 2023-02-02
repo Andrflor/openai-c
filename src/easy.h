@@ -23,7 +23,10 @@ typedef struct OpenAIStruct *OpenAI;
 
 struct OpenAIResponse {
   char *data;
-  CURLcode code;
+  /* 0->99 are CURLcode
+   99+ are html codes
+   200 should be the only ok code */
+  int code;
 };
 
 OpenAI openai_easy_init(char *api_key);

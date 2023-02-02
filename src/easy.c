@@ -1,4 +1,5 @@
 #include <stdarg.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -23,8 +24,11 @@ typedef struct OpenAIStruct {
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata) {
   struct OpenAIResponse *openai_response = (struct OpenAIResponse *)userdata;
 
-  printf("%s", ptr);
-  /* TODO: implement parsing body */
+  openai_response->data = strextract(ptr, "[{\"text\":\"", "\",\"index\":");
+  if (openai_response->data == NULL) {
+    openai_response->data = strextract(ptr, "\"message\": \"", "\",");
+    return size * nmemb;
+  }
   return size * nmemb;
 }
 

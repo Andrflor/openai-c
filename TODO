@@ -1,6 +1,4 @@
 code:
-	parse the actual response
-	handle errors from api
 	add testing
 	add suport for stream with another parameter
 	maybe something for templating prompt ??

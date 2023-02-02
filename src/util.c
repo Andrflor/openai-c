@@ -50,3 +50,22 @@ char *arr_strpretty(char **arr) {
 
   return json;
 }
+
+char *strextract(const char *str, const char *start, const char *end) {
+  const char *begin = strstr(str, start);
+  if (begin == NULL) {
+    return NULL;
+  }
+
+  const char *finish = strstr(begin + strlen(start), end);
+  if (finish == NULL) {
+    return NULL;
+  }
+
+  size_t len = finish - begin - strlen(start);
+  char *result = (char *)malloc(len + 1);
+
+  memcpy(result, begin + strlen(start), len);
+  result[len] = '\0';
+  return result;
+}
