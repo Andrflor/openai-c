@@ -10,6 +10,12 @@ const char *format = "{\"prompt\":\"%s\",\"max_tokens\": %d,\"stop\": %s,"
                      "\"model\": \"%s\",\"temperature\": %f, \"top_p\": %f, "
                      "\"frequency_penalty\": %f, \"presence_penalty\": %f}";
 
+const char *message_start = "[{\"text\":\"";
+const char *message_end = "\",\"index\":";
+
+const char *error_start = "\"message\": \"";
+const char *error_end = "\",";
+
 typedef struct OpenAIStruct {
   CURL *curl;
   char *model;
@@ -24,9 +30,9 @@ typedef struct OpenAIStruct {
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata) {
   struct OpenAIResponse *openai_response = (struct OpenAIResponse *)userdata;
 
-  openai_response->data = strextract(ptr, "[{\"text\":\"", "\",\"index\":");
+  openai_response->data = strextract(ptr, message_start, message_end);
   if (openai_response->data == NULL) {
-    openai_response->data = strextract(ptr, "\"message\": \"", "\",");
+    openai_response->data = strextract(ptr, error_start, error_end);
     return size * nmemb;
   }
   return size * nmemb;

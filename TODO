@@ -2,6 +2,7 @@ code:
 	add testing
 	add suport for stream with another parameter
 	maybe something for templating prompt ??
+  check memory leaks
 
 fixes:
 	cleanup is segfaulting...
