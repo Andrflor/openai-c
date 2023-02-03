@@ -17,18 +17,24 @@ TESTS=$(wildcard $(TEST)/*.c))
 INITBUILD=mkdir -p $(BUILD)
 COMPILE=$(INITBUILD) && $(TCC) $(CFLAGS) $(SRCS)
 
-all: $(BIN)
+all: $(BIN) $(BUILD)/libopenai-c.a $(BUILD)/libopenai-c.so
 
 $(BIN): $(OBJS)
 	$(CC) $^ -o $@ -lcurl
 
 $(OBJS): $(BUILD)/%.o : $(SRC)/%.c
-	$(INITBUILD) && $(CC) -c $< -o $@ -lcurl
+	$(INITBUILD) && $(CC) -c $< -o $@ $(CFLAGS) -fPIC
+
+$(BUILD)/libopenai-c.a: $(OBJS)
+	ar rcs $@ $^
+
+$(BUILD)/libopenai-c.so: $(SRCS)
+	$(CC) -fPIC -shared $(SRCS) -o $@ $(CFLAGS)
 
 run:
-	$(COMPILE) -o $(BIN) && ./$(BIN)
+	$(COMPILE) -g -o $(BIN) && ./$(BIN)
 
-debug: $(BIN)
+debug:
 	$(COMPILE) -g -o $(BIN)  && $(DEBUGGER) -q -ex run $(BIN)
 
 clean:

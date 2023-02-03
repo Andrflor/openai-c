@@ -9,5 +9,15 @@ main:
 	parse user commands
 	make help to guide user
 
+tests:
+  add tests to the test folder
+  use a framework ?? use <assert.h> ?
+  maybe add test in makefile?
+
+make:
+  add .a .so and bin to /dist
+  make arm version (/dist/arm || /dist/x86)
+  single header for easy portability?
+
 readme:
 	add information on make and on how to use
