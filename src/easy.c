@@ -150,7 +150,7 @@ struct OpenAIResponse openai_easy_perform(OpenAI openai, char *request) {
     free(body);
   } else {
     openai_response.code = CURLE_FAILED_INIT;
-    sprintf(openai_response.data, "OpenAI handle is not initiated properly");
+    openai_response.data = strdup("OpenAI handle is not initiated properly");
   }
   return openai_response;
 }

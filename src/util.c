@@ -69,3 +69,12 @@ char *strextract(const char *str, const char *start, const char *end) {
   result[len] = '\0';
   return result;
 }
+
+char *strdup(const char *s) {
+  size_t size = strlen(s) + 1;
+  char *p = malloc(size);
+  if (p) {
+    memcpy(p, s, size);
+  }
+  return p;
+}

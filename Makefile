@@ -3,6 +3,7 @@ CC=gcc
 DEBUGGER=gdb
 
 CFLAGS=-lcurl
+CCOV=-fprofile-arcs -ftest-coverage
 
 SRC=src
 BUILD=build
