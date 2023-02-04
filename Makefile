@@ -13,10 +13,12 @@ BIN=$(BUILD)/openai
 OBJS=$(patsubst $(SRC)/%.c, $(BUILD)/%.o, $(SRCS))
 
 SRCS=$(wildcard $(SRC)/*.c)
-TESTS=$(wildcard $(TEST)/*.c))
+TESTS=$(wildcard $(TEST)/*.c)
+
+LIBRCS=$(filter-out $(SRC)/main.c, $(SRCS))
 
 INITBUILD=mkdir -p $(BUILD)
-COMPILE=$(INITBUILD) && $(TCC) $(CFLAGS) $(SRCS)
+COMPILE=$(INITBUILD) && $(TCC) $(CFLAGS)
 
 all: $(BIN) $(BUILD)/libopenai-c.a $(BUILD)/libopenai-c.so
 
@@ -33,10 +35,13 @@ $(BUILD)/libopenai-c.so: $(SRCS)
 	$(CC) -fPIC -shared $(SRCS) -o $@ $(CFLAGS)
 
 run:
-	$(COMPILE) -g -o $(BIN) && ./$(BIN)
+	$(COMPILE) $(SRCS) -g -o $(BIN) && ./$(BIN)
+
+test:
+	$(COMPILE) $(LIBRCS) $(TESTS) -DDEBUG -g -o $(BIN)_test && ./$(BIN)_test
 
 debug:
-	$(COMPILE) -g -o $(BIN)  && $(DEBUGGER) -q -ex run $(BIN)
+	$(COMPILE) $(SRCS) -g -o $(BIN)  && $(DEBUGGER) -q -ex run $(BIN)
 
 clean:
 	rm -r $(BUILD)
