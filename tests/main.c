@@ -2,22 +2,24 @@
 #include <assert.h>
 #include <stdio.h>
 
-#define TO_STRING(x) #x
 #define TEST(func)                                                             \
-  printf("[TEST] Runing: %s\n", TO_STRING(func));                              \
+  printf("[TEST] Runing: %s\n", #func);                                        \
+  CURRENT = #func;                                                             \
   func()
 
 #define expect(actual, expected, evaluator)                                    \
   TOTAL_TESTS++;                                                               \
   if (!(evaluator(actual, expected))) {                                        \
     FAILED_TESTS++;                                                            \
-    printf("[TEST] Failed, expected: %s, got: %s\n", #expected, #actual);      \
+    printf("[TEST] Failed %s\n[TEST] Expected: %s, got: %s\n", CURRENT,        \
+           #expected, #actual);                                                \
   }
 
 #define equals(a, b) a == b
 
 int TOTAL_TESTS = 0;
 int FAILED_TESTS = 0;
+char *CURRENT = "";
 
 void trol(void) { expect(1, 2, equals); }
 
