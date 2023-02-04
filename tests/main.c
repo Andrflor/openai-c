@@ -2,13 +2,16 @@
 #include <assert.h>
 #include <stdio.h>
 
-#define TEST(name, func) ;
+#define TO_STRING(x) #x
+#define TEST(func)                                                             \
+  printf("[TEST] Runing: %s\n", TO_STRING(func));                              \
+  func()
 
 #define expect(actual, expected, evaluator)                                    \
   TOTAL_TESTS++;                                                               \
   if (!(evaluator(actual, expected))) {                                        \
     FAILED_TESTS++;                                                            \
-    printf("Assertion failed\n, expected: , got: ");                           \
+    printf("[TEST] Failed, expected: %s, got: %s\n", #expected, #actual);      \
   }
 
 #define equals(a, b) a == b
@@ -16,12 +19,7 @@
 int TOTAL_TESTS = 0;
 int FAILED_TESTS = 0;
 
-struct Test {
-  char *name;
-  int (*func)(void);
-};
-
-int trol(void) { return 0; }
+void trol(void) { expect(1, 2, equals); }
 
 int firstTest() {
   expect(1, 1, equals);
@@ -30,15 +28,11 @@ int firstTest() {
 
 int main(int argc, char *argv[]) {
 
-  printf("\n[TESTS] started...\n");
+  printf("\n[TEST] Started...\n");
 
-  struct Test test = {
-      .name = "SuperTest",
-      .func = trol,
-  };
+  TEST(trol);
 
-  log("Super login\n");
-  printf("[TESTS] RAN: %d, PASSED: %d, FAILED: %d, PERCENT: %.2f%%\n",
+  printf("[TEST] RAN: %d, PASSED: %d, FAILED: %d, PERCENT: %.2f%%\n",
          TOTAL_TESTS, TOTAL_TESTS - FAILED_TESTS, FAILED_TESTS,
          TOTAL_TESTS == 0 ? 0
                           : 100 * (((float)TOTAL_TESTS - (float)FAILED_TESTS)) /
