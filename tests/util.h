@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+#define equals(a, b) a == b
+
 #define TEST(func)                                                             \
   printf("[TEST] Runing: %s\n", #func);                                        \
   CURRENT = #func;                                                             \

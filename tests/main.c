@@ -2,8 +2,6 @@
 #include <assert.h>
 #include <stdio.h>
 
-#define equals(a, b) a == b
-
 int main(int argc, char *argv[]) {
 
   int TOTAL_TESTS = 0;
